@@ -353,7 +353,7 @@ function Doc(body, metadata, variables)
   -- Fixup the Tree a bit…
   root.optimize()
   -- Hoist
-  if #root.children == 1 then
+  if #root.children == 1 and root.children[1].type == 'Goal' then
     root = root.children[1]
     root.parent = nil
   end

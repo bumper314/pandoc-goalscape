@@ -114,7 +114,7 @@ function GSGoal(init)
         if v.type ~= 'Note' then
           -- Insert squish notes first
           if #squished > 0 then
-            table.insert(new_children, GSNote({name = table.concat(squished,'<P></P>')}))
+            table.insert(new_children, GSNote({name = table.concat(squished,'')}))
             squished = {}
           end 
           table.insert(new_children, v)
@@ -123,7 +123,7 @@ function GSGoal(init)
         end
       end
       if #squished > 0 then
-        table.insert(new_children, GSNote({name = table.concat(squished,'<P></P>')}))
+        table.insert(new_children, GSNote({name = table.concat(squished,'')}))
       end
       self.children = new_children
     end
@@ -377,7 +377,7 @@ end
 
 function Blocksep()
   log("Blocksep")
-  return "\n"
+  return ""
 end
 
 function Str(s)
@@ -392,7 +392,7 @@ end
 
 function SoftBreak()
   log("SoftBreak")
-  return "\n"
+  return ""
 end
 
 function LineBreak()
@@ -540,7 +540,7 @@ end
 
 function BlockQuote(s)
   log("BlockQuote")
-  return "<blockquote>\n" .. s .. "\n</blockquote>"
+  return "<blockquote>" .. s .. "</blockquote>"
 end
 
 function HorizontalRule()
@@ -550,7 +550,7 @@ end
 
 function LineBlock(ls)
   log("LineBlock")
-  return Para(table.concat(ls, '<BR/>\n'))
+  return Para(table.concat(ls, '<BR/>'))
 end
 
 function CodeBlock(s, attr)
@@ -636,7 +636,7 @@ function Table(caption, aligns, widths, headers, rows)
     add('</tr>')
   end
   add('</table')
-  return table.concat(buffer,'\n')
+  return table.concat(buffer,'')
 end
 
 function RawBlock(format, str)
@@ -649,7 +649,7 @@ end
 
 function Div(s, attr)
   log("Div")
-  return "<P" .. attributes(attr) .. ">\n" .. s .. "</P>"
+  return "<P" .. attributes(attr) .. ">" .. s .. "</P>"
 end
 
 

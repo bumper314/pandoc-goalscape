@@ -1,4 +1,4 @@
--- Invoke with: pandoc -t goalscape.lua --template=default.goalscape test.md > test.gsp
+-- Invoke with: pandoc -t goalscape.lua --template default.goalscape --filter pandoc-filter-goalscape.php test.md > test.gsp
 
 local DEBUG = {
   structure = false,
@@ -382,7 +382,7 @@ end
 
 function Str(s)
   log("Str")
-  return escape(s)
+  return s
 end
 
 function Space()

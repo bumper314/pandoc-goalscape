@@ -28,7 +28,7 @@ This text will appear in the **Notes** tab, which supports:
 To convert the Markdown file `example1.md` into the Goalscape Project file `example1.gsp`, use the command:
 
 ```
-pandoc -t goalscape.lua --template default.goalscape --filter pandoc-filter-goalscape.php example1.md > example1.gsp
+pandoc -t goalscape.lua --template default.goalscape --filter ./pandoc-filter-goalscape.php example1.md > example1.gsp
 ```
 
 ![](/../gh-pages/images/example1.png?raw=true)

@@ -1,0 +1,3 @@
+[submodule "pandocfilters-php"]
+	path = pandocfilters-php
+	url = https://github.com/Vinai/pandocfilters-php.git

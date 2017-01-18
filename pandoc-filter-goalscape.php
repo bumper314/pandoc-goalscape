@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require_once 'pandocfilters.php';
+require_once 'pandocfilters-php/pandocfilters.php';
 
 Pandoc_Filter::toJSONFilter(function($type, $value, $format, $meta) use ($Header, $Str) {
 	// Strip formatting from Headers (Goal names in Goalscape)

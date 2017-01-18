@@ -31,8 +31,11 @@ function GSGoal(init)
   for k,v in pairs(init) do self[k] = v end
   
   function self.level()
-    if not self.parent then return 0 end
-    return self.parent.level() + 1
+    if self.parent then
+      return self.parent.level() + 1
+    else
+      return 0
+    end
   end
   
   function self.length()
@@ -61,7 +64,7 @@ function GSGoal(init)
     return subgoals
   end
   
-  -- Importance in GoalScape controls the size of the wedge
+  -- Importance in Goalscape controls the size of the wedge
   function self.importance()
     local imp = 100
     if self.parent then
@@ -92,9 +95,17 @@ function GSGoal(init)
   
   function self.addChild(c)
     if c then
-      table.insert(self.children, c)
       c.parent = self
       c.weight = self.weight
+      table.insert(self.children, c)
+    end
+  end
+
+  function self.replaceChildren(replacements)
+    self.children = {}
+    local k,v
+    for k,v in pairs(replacements) do
+      self.addChild(v)
     end
   end
   
@@ -106,7 +117,7 @@ function GSGoal(init)
   
   function self.squishNotes()
     if #self.children > 1 then
-      -- Squish consequtive notes into a single note
+      -- Squish consecutive notes into a single note
       local new_children = {}
       local squished = {}
       local k,v
@@ -125,7 +136,7 @@ function GSGoal(init)
       if #squished > 0 then
         table.insert(new_children, GSNote({name = table.concat(squished,'')}))
       end
-      self.children = new_children
+      self.replaceChildren(new_children)
     end
     -- Recurse after squishing
     if #self.children > 0 then
@@ -144,6 +155,7 @@ function GSGoal(init)
     -- TODO
   end
   
+  -- DEBUG
   function self.toTabIndentedList()
     local str = ""
     local k,v
@@ -155,28 +167,28 @@ function GSGoal(init)
     return tabs .. self.name .. '\t' .. self.importance() .. '\n' .. str
   end
 
-  function self.toGoalScapeXML()
+  function self.toGoalscapeXML()
     local str = ""
         
-    -- Recurse Tree and renest if necessary
+    -- Recurse and re-nest if necessary
     local k,v
     if #self.children == 1 then
       for k,v in pairs(self.children) do
-        str = str .. v.toGoalScapeXML()
+        str = str .. v.toGoalscapeXML()
       end
     elseif #self.children > 1 then  
       for k,v in pairs(self.children) do
         if k == 1 and v.type == "Note" then
           -- noop: keep notes under this goal rather than creating a subgoal 
         elseif v.type ~= "Goal" then
-          -- Renest
+          -- Re-nest
           local leaf = GSGoal({name = " ", parent = self}) -- DEBUG use "*" to see better
           leaf.addChild(v)
           self.children[k] = leaf
           v = leaf
         end
         
-        str = str .. v.toGoalScapeXML()
+        str = str .. v.toGoalscapeXML()
       end
     end
     
@@ -186,8 +198,8 @@ function GSGoal(init)
     attr['progress']   = "0.00"
     attr['relativeFontSize'] = "0"
     attr['notesTabIndex'] = "0"
-    local tabs = string.rep('\t',self.level())
-    return tabs .. '<goal' .. attributes(attr) .. '>\n' .. str .. '\n' .. tabs .. '</goal>\n'
+    local tabs = string.rep('\t',self.level()+1)
+    return tabs .. '<goal' .. attributes(attr) .. '>\n' .. str .. tabs .. '</goal>\n'
   end
 
   -- return the instance
@@ -211,12 +223,12 @@ function GSNote(init)
   end
   
   function self.toTabIndentedList()
-    local tabs = string.rep('\t',self.level())
-    return tabs .. "NOTE" .. '\n'
+    local tabs = string.rep('\t',self.level()+1)
+    return tabs .. 'NOTE\n'
   end
   
-  function self.toGoalScapeXML()
-    local tabs = string.rep('\t',self.level())
+  function self.toGoalscapeXML()
+    local tabs = string.rep('\t',self.level()+1)
     return tabs .. '<notes><![CDATA[<HTML><BODY>' .. self.name .. '</BODY></HTML>]]></notes>\n'
   end
   
@@ -240,13 +252,14 @@ function GSAttachment(init, url)
     io.stderr:write("WARNING: Trying to add child on an Attachment\n");
   end
   
+  -- DEBUG
   function self.toTabIndentedList()
-    local tabs = string.rep('\t',self.level())
-    return tabs .. "ATTACHMENT" .. '\n'
+    local tabs = string.rep('\t',self.level()+1)
+    return tabs .. 'ATTACHMENT\n'
   end
   
-  function self.toGoalScapeXML()    
-    local tabs = string.rep('\t',self.level())
+  function self.toGoalscapeXML()    
+    local tabs = string.rep('\t',self.level()+1)
     return tabs .. '<attachments><attachment name="' .. escape(self.name,true) .. '" url="' .. escape(purl,true) .. '"/></attachments>\n'
   end
   
@@ -258,7 +271,7 @@ end
 -- Table to store footnotes, so they can be included at the end.
 local notes = {}
 
-local root = GSGoal({name = "ROOT"})
+local root = GSGoal({name = " "})
 local branch = root
 
 
@@ -358,10 +371,12 @@ function Doc(body, metadata, variables)
     root.parent = nil
   end
   
-  --add(root.toTabIndentedList())
-  --add("----------------------------")
-  add(root.toGoalScapeXML())
-  return table.concat(buffer,'\n') .. '\n'
+  if DEBUG.structure then
+    io.stderr:write(root.toTabIndentedList())
+  end
+
+  add(root.toGoalscapeXML())
+  return table.concat(buffer,'\n')
 end
 
 
@@ -517,7 +532,7 @@ function Header(lev, s, attr)
   if lev > depth then
     while branch.level() < lev-1 do
       -- Create intermediate levels to maintain structure
-      leaf = GSGoal({name = "INTERMEDIATE"})
+      leaf = GSGoal({name = " "})
       branch.addChild(leaf)
       branch = leaf
     end

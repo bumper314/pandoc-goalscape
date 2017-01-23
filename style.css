@@ -1,0 +1,122 @@
+body {
+	font: 13px "Helvetica", "Arial", sans-serif;
+	color: #444;
+	background-image: url("bg.png");
+}
+abbr {
+	display: inline-block;
+	border-bottom: 1px dotted #e1e1e8;
+	white-space: nowrap;
+}
+a {
+	color: #a22ab3;
+	text-decoration: none;
+	border-bottom: 1px solid #e6bfec;
+}
+/* https://www.sanwebe.com/2014/08/css-html-forms-designs */
+.form-style-1 fieldset {
+	margin: 40px auto;
+	max-width: 400px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border: 1px solid #BEBEBE;
+	padding: 20px;
+	background-color: rgba(248, 248, 248, 0.9);
+}
+.form-style-1 fieldset legend {
+	padding: 4px 10px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	font-weight: normal;
+	font-size: 120%;
+	color: white;
+	background-color: #444;
+}
+.form-style-1 ul {
+	padding: 0;
+	margin: 0 20px;
+}
+.form-style-1 li {
+	padding: 0;
+	display: block;
+	list-style: none;
+	margin: 10px 0 0 0;
+}
+.form-style-1 label {
+	margin: 4px;
+	padding: 0px;
+	font-weight: bold;
+}
+.form-style-1 input[type=text], 
+.form-style-1 input[type=date],
+.form-style-1 input[type=datetime],
+.form-style-1 input[type=number],
+.form-style-1 input[type=search],
+.form-style-1 input[type=time],
+.form-style-1 input[type=url],
+.form-style-1 input[type=email],
+textarea, 
+select{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	border: 1px solid #BEBEBE;
+	padding: 7px;
+	margin: 4px 0;
+	-webkit-transition: all 0.15s ease-in-out;
+	-moz-transition: all 0.15s ease-in-out;
+	-ms-transition: all 0.15s ease-in-out;
+	-o-transition: all 0.15s ease-in-out;
+	outline: none;
+}
+.form-style-1 input[type=text]:focus, 
+.form-style-1 input[type=date]:focus,
+.form-style-1 input[type=datetime]:focus,
+.form-style-1 input[type=number]:focus,
+.form-style-1 input[type=search]:focus,
+.form-style-1 input[type=time]:focus,
+.form-style-1 input[type=url]:focus,
+.form-style-1 input[type=email]:focus,
+.form-style-1 textarea:focus, 
+.form-style-1 select:focus{
+	-moz-box-shadow: 0 0 8px #99DD00;
+	-webkit-box-shadow: 0 0 8px #99DD00;
+	box-shadow: 0 0 8px #99DD00;
+	border: 1px solid #99DD00;
+}
+.form-style-1 .field-divided {
+	width: 49%;
+}
+.form-style-1 .field-long {
+	width: 100%;
+}
+.form-style-1 .field-select {
+	width: 100%;
+}
+.form-style-1 .field-textarea {
+	min-height: 300px;
+}
+.form-style-1 input[type=submit], .form-style-1 input[type=button] {
+	background: #9c22cb;
+	padding: 8px 15px 8px 15px;
+	border: none;
+	color: #fff;
+}
+.form-style-1 input[type=submit]:hover, .form-style-1 input[type=button]:hover {
+	background: #691789;
+	box-shadow:none;
+	-moz-box-shadow:none;
+	-webkit-box-shadow:none;
+}
+.form-style-1 .error {
+	color: black;
+	padding: 4px 10px;
+	margin: 10px 0;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	font-weight: normal;
+	background-color: #f0a4cc;
+}

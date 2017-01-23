@@ -1,0 +1,4 @@
+[submodule "pandoc-goalscape"]
+	path = pandoc-goalscape
+	url = git@github.com:bumper314/pandoc-goalscape.git
+	branch = master

@@ -18,7 +18,7 @@ This text will appear in the **Notes** tab, which supports:
 
 - *simple* styling
 - [links](http://pandoc.org)
-- and lists
+- and flat lists
 
 ## Subgoal 2
 
@@ -31,4 +31,14 @@ To convert the Markdown file `example1.md` into the Goalscape Project file `exam
 pandoc -t goalscape.lua --template default.goalscape --filter ./pandoc-filter-goalscape.php example1.md > example1.gsp
 ```
 
-![](/../gh-pages/images/example1.png?raw=true)
+![](/../gh-pages/images/ss-example1.png?raw=true)
+
+## Examples To Be Documented
+
+![](/../gh-pages/images/ex-us-constitution.png?raw=true)
+![](/../gh-pages/images/ex-king-james-bible.png?raw=true)
+![](/../gh-pages/images/ex-animals-importance-even.png?raw=true)
+![](/../gh-pages/images/ex-animals-importance-subgoals-even.png?raw=true)
+![](/../gh-pages/images/ex-animals-importance-subgoals.png?raw=true)
+![](/../gh-pages/images/ex-evaluator.png?raw=true)
+![](/../gh-pages/images/ss-naming.png?raw=true)

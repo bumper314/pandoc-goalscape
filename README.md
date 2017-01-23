@@ -1,6 +1,6 @@
 # pandoc-goalscape-dingus
 
-Web dingus for [pandoc-goalscape](/../master/) to convert to [Goalscape](http://www.goalscape.com) Project files (.gsp)
+Web dingus for [pandoc-goalscape](/../..) to convert to [Goalscape](http://www.goalscape.com) Project files (.gsp)
 
 ## Example Usage
 

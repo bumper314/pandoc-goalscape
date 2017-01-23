@@ -336,6 +336,7 @@ local branch = root
 
 -- Character escaping
 function escape(s, in_attribute)
+  s = "" .. s -- defensive
   return s:gsub("[<>&\"']",
     function(x)
       if x == '<' then

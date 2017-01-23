@@ -5,7 +5,8 @@
 ## Installation
 
 * [Install Pandoc](http://pandoc.org/installing.html) (v1.13 or later).
-* Download `goalscape.lua` and `default.goalscape` and put somewhere in your PATH.
+* git clone --recursive https://github.com/bumper314/pandoc-goalscape.git
+* cd pandoc-goalscape
 
 ## Usage Example
 
@@ -28,7 +29,7 @@ This text will appear in the **Notes** tab, which supports:
 Convert the Markdown file `example1.md` to a Goalscape Project file `example1.gsp` using the command:
 
 ```
-pandoc -t goalscape.lua --template default.goalscape --filter ./pandoc-filter-goalscape.php example1.md > example1.gsp
+pandoc -t goalscape.lua --template default.goalscape --filter ./pandoc-filter-goalscape.php examples/example1.md > examples/example1.gsp
 ```
 
 The result in Goalscape:

@@ -1,15 +1,15 @@
 <project type="Goalscape" version="3.0">
-  <header>
-    <title>$title$</title>
-    <selectedGoal>0</selectedGoal>
-    <centredGoal/>
-    <maxExpandedLevels>-1</maxExpandedLevels>
-    <gridData>0|0|0|0</gridData>
-    <persons/>
-    <tags/>
-    <preferences notesFontsize="14" projectViewType="0" notesExpanded="false" panelPercentWidth="27.77777777777778" enableStartDate="false" enableEndDate="true" disableAlarmClocks="false" enableFullColoring="false"/>
-  </header>
-  <goals>
+	<header>
+		<title>$title$</title>
+		<selectedGoal>0</selectedGoal>
+		<centredGoal/>
+		<maxExpandedLevels>-1</maxExpandedLevels>
+		<gridData>0|0|0|0</gridData>
+		<persons/>
+		<tags/>
+		<preferences notesFontsize="14" projectViewType="0" notesExpanded="false" panelPercentWidth="27.00" enableStartDate="false" enableEndDate="false" disableAlarmClocks="false" enableFullColoring="false"/>
+	</header>
+	<goals>
 $body$
-  </goals>
+	</goals>
 </project>

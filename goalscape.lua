@@ -118,7 +118,7 @@ function GSGoal(init)
         if v.type ~= 'Note' then
           -- Insert squish notes first
           if #squished > 0 then
-            table.insert(new_children, GSNote({name = table.concat(squished,'')}))
+            table.insert(new_children, GSNote({name = table.concat(squished,'<P></P>')}))
             squished = {}
           end 
           table.insert(new_children, v)
@@ -127,7 +127,7 @@ function GSGoal(init)
         end
       end
       if #squished > 0 then
-        table.insert(new_children, GSNote({name = table.concat(squished,'')}))
+        table.insert(new_children, GSNote({name = table.concat(squished,'<P></P>')}))
       end
       self.replaceChildren(new_children)
     end
@@ -463,7 +463,7 @@ end
 
 function SoftBreak()
   log("SoftBreak")
-  return ""
+  return " "
 end
 
 function LineBreak()

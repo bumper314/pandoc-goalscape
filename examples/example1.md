@@ -6,7 +6,7 @@ This text will appear in the **Notes** tab, which supports:
 
 - *simple* styling
 - [links](http://pandoc.org)
-- and lists
+- and flat lists
 
 ## Subgoal 2
 

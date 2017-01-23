@@ -25,13 +25,16 @@ This text will appear in the **Notes** tab, which supports:
 ## Subgoal 3
 ```
 
-To convert the Markdown file `example1.md` into the Goalscape Project file `example1.gsp`, use the command:
+Convert the Markdown file `example1.md` to a Goalscape Project file `example1.gsp` using the command:
 
 ```
 pandoc -t goalscape.lua --template default.goalscape --filter ./pandoc-filter-goalscape.php example1.md > example1.gsp
 ```
 
+The result in Goalscape:
+
 ![](/../gh-pages/images/ss-example1.png?raw=true)
+
 
 ## Examples To Be Documented
 

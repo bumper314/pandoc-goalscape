@@ -23,6 +23,7 @@ function GSGoal(init)
     name = "",
     parent = nil,
     children = {},
+    importance = 100,
     weight = WEIGHT.children
   }
 
@@ -64,27 +65,6 @@ function GSGoal(init)
     return subgoals
   end
   
-  -- Importance in Goalscape controls the size of the wedge
-  function self.importance()
-    local imp = 100
-    if self.parent then
-      local even = 100 / #self.parent.subgoals(false)
-      local pweight = self.parent.weight
-      if pweight == WEIGHT.length then
-        imp = 100 * self.length() / self.parent.length()
-      elseif pweight == WEIGHT.children then
-        local subs = #self.subgoals(true) + 1
-        imp = 100 * subs / #self.parent.subgoals(true)
-      elseif pweight == WEIGHT.even then
-        imp = even
-      else
-        io.stderr:write(string.format("WARNING: Unknown weight %s, using 'even'\n", pweight));
-        imp = even
-      end
-    end
-    return string.format("%.2f", imp)
-  end
-  
   function self.addNote(s)
     self.addChild(GSNote({name = s}))
   end
@@ -101,23 +81,36 @@ function GSGoal(init)
     end
   end
 
+  function self.replaceChild(child, replacement)
+    local k,v
+    for k,v in pairs(self.children) do
+      if v == child then
+        self.children[k] = replacement
+        replacement.parent = self
+        replacement.weight = self.weight
+        return
+      end
+    end
+  end
+
   function self.replaceChildren(replacements)
     self.children = {}
     local k,v
     for k,v in pairs(replacements) do
-      self.addChild(v)
+      -- Don't use addChild because it sets the weight
+      v.parent = self
+      table.insert(self.children, v)
     end
   end
   
-  function self.optimize()
+  function self.normalize()
     self.squishNotes()
-    self.squishAttachments()
-    self.squishTree()
+    self.normalizeTree()
   end
   
+  -- Squish consecutive notes into a single note
   function self.squishNotes()
     if #self.children > 1 then
-      -- Squish consecutive notes into a single note
       local new_children = {}
       local squished = {}
       local k,v
@@ -147,14 +140,93 @@ function GSGoal(init)
     end
   end
   
-  function self.squishAttachments()
-    -- TODO
+  -- Re-nest if necessary
+  function self.normalizeTree()
+    local k,v
+    for k,v in pairs(self.children) do
+      v.normalizeTree()
+      
+      if k == 1 and v.type == "Note" then
+        -- noop: keep notes under this goal rather than creating a subgoal 
+      elseif v.type ~= "Goal" then
+        -- Renest
+        local leaf = GSGoal({name = " ", parent = self}) -- DEBUG use "*" to see better
+        leaf.addChild(v)
+        self.children[k] = leaf
+      end
+    end
   end
-  
-  function self.squishTree()
-    -- TODO
+
+  -- Importance in Goalscape controls the size of the wedge.
+  -- Minimum importance is 1.  Maximum is 100.
+  -- A total of 100 is distributed among siblings.
+  function self.calculateImportance()
+    local tocalc = self.subgoals(false)
+    if #tocalc == 0 then
+      return
+    end
+
+    -- TODO: cache values to speed up calculations
+    for k,v in pairs(self.subgoals(false)) do
+      v.calculateImportance()
+    end
+    
+    local dividend = 0
+    if self.weight == WEIGHT.length then
+      dividend = self.length()
+    elseif self.weight == WEIGHT.children then
+      dividend = #self.subgoals(true)
+    else -- even split
+      dividend = #tocalc
+    end
+
+    if dividend == 0 then
+      io.stderr:write("ERROR: Dividend can't be 0\n");
+      return
+    end
+
+    -- Loop subgoals and calculate their relative Importance
+    -- If the Importance of a goal would be < 1, round to 1 and
+    --   redistribute the Importance of other siblings proportionally
+    local balance = 100
+    local share, debt
+    repeat
+      debt = 0
+      local toredist = {}
+      
+      local k,v
+      for k,v in pairs(tocalc) do
+        
+        if self.weight == WEIGHT.length then
+          share = balance * v.length() / dividend
+        elseif self.weight == WEIGHT.children then
+          share = balance * (#v.subgoals(true) + 1) / dividend
+        else -- even split
+          share = balance / dividend
+        end
+        
+        if share < 1 then -- This can happen
+          io.stderr:write(string.format("WARNING: Importance out of bounds (1 < %f < 100)\n", share));
+          debt = debt + (1 - share)
+          share = 1
+        elseif share > 100 then -- This shouldn't happen
+          io.stderr:write(string.format("WARNING: Importance out of bounds (1 < %f < 100)\n", share));
+          share = 100
+        else
+          -- If the value was in bounds, we might need to redistribute
+          -- this goals's Importance to compensate for an out of bounds value
+          table.insert(toredist, v)
+        end
+        
+        v.importance = string.format("%.2f", share)
+      end
+      
+      tocalc = toredist
+      balance = balance - debt
+    
+    until debt < 1 or balance < 1
   end
-  
+
   -- DEBUG
   function self.toTabIndentedList()
     local str = ""
@@ -163,38 +235,20 @@ function GSGoal(init)
       str = str .. v.toTabIndentedList()
     end
   
-    local tabs = string.rep('\t',self.level())
-    return tabs .. self.name .. '\t' .. self.importance() .. '\n' .. str
+    local tabs = string.rep('\t', self.level())
+    return tabs .. self.name .. '\t' .. self.importance .. '\n' .. str
   end
 
   function self.toGoalscapeXML()
     local str = ""
-        
-    -- Recurse and re-nest if necessary
     local k,v
-    if #self.children == 1 then
-      for k,v in pairs(self.children) do
-        str = str .. v.toGoalscapeXML()
-      end
-    elseif #self.children > 1 then  
-      for k,v in pairs(self.children) do
-        if k == 1 and v.type == "Note" then
-          -- noop: keep notes under this goal rather than creating a subgoal 
-        elseif v.type ~= "Goal" then
-          -- Re-nest
-          local leaf = GSGoal({name = " ", parent = self}) -- DEBUG use "*" to see better
-          leaf.addChild(v)
-          self.children[k] = leaf
-          v = leaf
-        end
-        
-        str = str .. v.toGoalscapeXML()
-      end
+    for k,v in pairs(self.children) do
+      str = str .. v.toGoalscapeXML()
     end
     
     local attr = {}
     attr['name'] = string.sub(self.name, 0, 255)
-    attr['importance'] = self.importance()
+    attr['importance'] = self.importance
     attr['progress']   = "0.00"
     attr['relativeFontSize'] = "0"
     attr['notesTabIndex'] = "0"
@@ -364,12 +418,13 @@ function Doc(body, metadata, variables)
   end
   
   -- Fixup the Tree a bit…
-  root.optimize()
   -- Hoist
   if #root.children == 1 and root.children[1].type == 'Goal' then
     root = root.children[1]
     root.parent = nil
   end
+  root.normalize()
+  root.calculateImportance()
   
   if DEBUG.structure then
     io.stderr:write(root.toTabIndentedList())

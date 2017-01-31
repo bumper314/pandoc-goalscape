@@ -64,8 +64,7 @@ if(isset($_REQUEST['format']) && isset($_REQUEST['convert_text']) && isset($_REQ
 		1 => array("pipe", "w"),  // stdout
 		2 => array("pipe", "w"),  // stderr
 	);
-	// FIXME: Filter Doesn't run on my server
-	$cmd = "$pandoc --from $format --to $writer --template $template"; // --filter $filter
+	$cmd = "$pandoc --from $format --to $writer --template $template --filter $filter";
 	$process = proc_open($cmd, $descriptors, $pipes, "/", null);
 	
 	fwrite($pipes[0], $source);

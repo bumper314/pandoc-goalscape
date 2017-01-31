@@ -2,6 +2,10 @@
 
 Web dingus for [pandoc-goalscape](/../..) to convert to [Goalscape](http://www.goalscape.com) Project files (.gsp)
 
+## Installation
+
+* git clone --recursive -b dingus https://github.com/bumper314/pandoc-goalscape.git pandoc-goalscape-dingus
+
 ## Example Usage
 
 ```markdown

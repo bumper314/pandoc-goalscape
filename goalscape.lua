@@ -6,9 +6,9 @@ local DEBUG = {
 }
 
 local WEIGHT = {
-  even = "even",
-  length = "length",
-  children = "children"
+  even = "weight-even",
+  length = "weight-length",
+  subgoals = "weight-subgoals"
 }
 
 local escape, attributes, pipe, html_align, tabbed, log
@@ -24,7 +24,7 @@ function GSGoal(init)
     parent = nil,
     children = {},
     importance = 100,
-    weight = WEIGHT.children
+    weight = WEIGHT.subgoals
   }
 
   -- merge init into self
@@ -174,7 +174,7 @@ function GSGoal(init)
     local dividend = 0
     if self.weight == WEIGHT.length then
       dividend = self.length()
-    elseif self.weight == WEIGHT.children then
+    elseif self.weight == WEIGHT.subgoals then
       dividend = #self.subgoals(true)
     else -- even split
       dividend = #tocalc
@@ -199,7 +199,7 @@ function GSGoal(init)
         
         if self.weight == WEIGHT.length then
           share = balance * v.length() / dividend
-        elseif self.weight == WEIGHT.children then
+        elseif self.weight == WEIGHT.subgoals then
           share = balance * (#v.subgoals(true) + 1) / dividend
         else -- even split
           share = balance / dividend
@@ -602,8 +602,16 @@ function Header(lev, s, attr)
   branch.addChild(leaf)
   branch = leaf
   
-  if WEIGHT[attr['class']] ~= nil then
-    branch.weight = attr['class']
+  -- See if a class is modifying the importance calculation weight
+  local c = attr['class']
+  if c ~= nil then
+    local k,v
+    for k,v in pairs(WEIGHT) do
+      if v == c then
+        branch.weight = v
+        break
+      end
+    end
   end
 
   return ""

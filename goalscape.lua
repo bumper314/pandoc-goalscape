@@ -167,13 +167,17 @@ function GSGoal(init)
     end
 
     -- TODO: cache values to speed up calculations
-    for k,v in pairs(self.subgoals(false)) do
+    local totallen = 0
+    for k,v in pairs(tocalc) do
       v.calculateImportance()
+      if self.weight == WEIGHT.length then
+        totallen = totallen + v.length()
+      end
     end
     
     local dividend = 0
     if self.weight == WEIGHT.length then
-      dividend = self.length()
+      dividend = totallen
     elseif self.weight == WEIGHT.subgoals then
       dividend = #self.subgoals(true)
     else -- even split
